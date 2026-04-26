@@ -13,7 +13,8 @@ import org.json.JSONArray
 import org.json.JSONObject
 import java.time.LocalDate
 import java.util.UUID
-
+import androidx.glance.appwidget.updateAll
+import com.aspharier.endbadhabit.widget.HabitWidget
 private val Context.dataStore: DataStore<Preferences> by preferencesDataStore(name = "habit_prefs")
 
 class HabitDataStore(private val context: Context) {
@@ -95,6 +96,7 @@ class HabitDataStore(private val context: Context) {
             prefs.remove(LEGACY_START_DATE)
             prefs.remove(LEGACY_LAST_OPENED_DATE)
         }
+        updateWidget()
     }
 
     /**
@@ -114,6 +116,7 @@ class HabitDataStore(private val context: Context) {
                 prefs.remove(SELECTED_HABIT_ID)
             }
         }
+        updateWidget()
     }
 
     /**
@@ -132,6 +135,7 @@ class HabitDataStore(private val context: Context) {
                 prefs[HABITS_JSON] = buildHabitsJson(currentHabits)
             }
         }
+        updateWidget()
     }
 
     /**
@@ -151,12 +155,14 @@ class HabitDataStore(private val context: Context) {
                 prefs[HABITS_JSON] = buildHabitsJson(currentHabits)
             }
         }
+        updateWidget()
     }
     
     suspend fun selectHabit(id: String) {
         context.dataStore.edit { prefs ->
             prefs[SELECTED_HABIT_ID] = id
         }
+        updateWidget()
     }
 
     /**
@@ -165,6 +171,14 @@ class HabitDataStore(private val context: Context) {
     suspend fun setTheme(themeKey: String) {
         context.dataStore.edit { prefs ->
             prefs[SELECTED_THEME] = themeKey
+        }
+    }
+    
+    private suspend fun updateWidget() {
+        try {
+            HabitWidget().updateAll(context)
+        } catch (e: Exception) {
+            e.printStackTrace()
         }
     }
     
