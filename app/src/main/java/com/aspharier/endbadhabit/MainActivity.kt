@@ -14,6 +14,7 @@ import com.aspharier.endbadhabit.ui.screens.HomeScreen
 import com.aspharier.endbadhabit.ui.screens.ThemePickerSheet
 import com.aspharier.endbadhabit.ui.screens.HabitListSheet
 import com.aspharier.endbadhabit.ui.screens.CreateHabitSheet
+import com.aspharier.endbadhabit.ui.screens.MilestonesScreen
 import com.aspharier.endbadhabit.ui.theme.EndBadHabitTheme
 import com.aspharier.endbadhabit.ui.viewmodel.MainViewModel
 import com.aspharier.endbadhabit.ui.viewmodel.HabitUiState
@@ -31,6 +32,7 @@ class MainActivity : ComponentActivity() {
             var showThemePicker by remember { mutableStateOf(false) }
             var showHabitList by remember { mutableStateOf(false) }
             var showCreateHabit by remember { mutableStateOf(false) }
+            var showMilestones by remember { mutableStateOf(false) }
 
             EndBadHabitTheme(appTheme = appTheme) {
                 HomeScreen(
@@ -40,7 +42,8 @@ class MainActivity : ComponentActivity() {
                     onDeleteHabit = viewModel::deleteHabit,
                     onRestartStreak = viewModel::restartStreak,
                     onThemePickerOpen = { showThemePicker = true },
-                    onHabitListOpen = { showHabitList = true }
+                    onHabitListOpen = { showHabitList = true },
+                    onMilestonesOpen = { showMilestones = true }
                 )
 
                 if (showThemePicker) {
@@ -78,6 +81,17 @@ class MainActivity : ComponentActivity() {
                             showCreateHabit = false
                         },
                         onDismiss = { showCreateHabit = false }
+                    )
+                }
+
+                if (showMilestones) {
+                    val currentStreak = when (val state = uiState) {
+                        is HabitUiState.ActiveStreak -> state.streakDays
+                        else -> 0L
+                    }
+                    MilestonesScreen(
+                        currentStreak = currentStreak,
+                        onBack = { showMilestones = false }
                     )
                 }
             }

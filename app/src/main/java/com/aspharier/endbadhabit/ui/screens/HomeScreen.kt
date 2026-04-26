@@ -68,6 +68,7 @@ fun HomeScreen(
     onRestartStreak: () -> Unit,
     onThemePickerOpen: () -> Unit,
     onHabitListOpen: () -> Unit,
+    onMilestonesOpen: () -> Unit,
     modifier: Modifier = Modifier
 ) {
     Box(
@@ -114,7 +115,9 @@ fun HomeScreen(
                     habitName = state.habitName,
                     streakDays = state.streakDays,
                     onDeleteHabit = onDeleteHabit,
-                    onHabitListOpen = onHabitListOpen
+                    onHabitListOpen = onHabitListOpen,
+                    onRestartStreak = onRestartStreak,
+                    onMilestonesOpen = onMilestonesOpen
                 )
                 is HabitUiState.StreakBroken -> StreakBrokenContent(
                     habitName = state.habitName,
@@ -236,9 +239,12 @@ private fun ActiveStreakContent(
     habitName: String,
     streakDays: Long,
     onDeleteHabit: () -> Unit,
-    onHabitListOpen: () -> Unit
+    onHabitListOpen: () -> Unit,
+    onRestartStreak: () -> Unit,
+    onMilestonesOpen: () -> Unit
 ) {
     var showDeleteDialog by remember { mutableStateOf(false) }
+    var showResetDialog by remember { mutableStateOf(false) }
 
     // Lottie fire animation
     val composition by rememberLottieComposition(
@@ -305,33 +311,41 @@ private fun ActiveStreakContent(
         Spacer(modifier = Modifier.weight(0.3f))
 
         Row(
-            modifier = Modifier.padding(bottom = 32.dp),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            modifier = Modifier
+                .padding(bottom = 32.dp)
+                .fillMaxWidth(),
+            horizontalArrangement = Arrangement.SpaceEvenly,
+            verticalAlignment = Alignment.CenterVertically
         ) {
-            OutlinedButton(
-                onClick = { showDeleteDialog = true },
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
+            TextButton(onClick = { showResetDialog = true }) {
                 Text(
-                    text = "delete",
-                    style = MaterialTheme.typography.labelLarge
+                    text = "reset",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
+                )
+            }
+
+            TextButton(onClick = onMilestonesOpen) {
+                Text(
+                    text = "roadmap",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
             
-            Button(
-                onClick = onHabitListOpen,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                ),
-                shape = RoundedCornerShape(12.dp)
-            ) {
+            TextButton(onClick = { showDeleteDialog = true }) {
+                Text(
+                    text = "delete",
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.error
+                )
+            }
+            
+            TextButton(onClick = onHabitListOpen) {
                 Text(
                     text = "all habits",
-                    style = MaterialTheme.typography.labelLarge
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.primary
                 )
             }
         }
@@ -369,6 +383,50 @@ private fun ActiveStreakContent(
             },
             dismissButton = {
                 TextButton(onClick = { showDeleteDialog = false }) {
+                    Text(
+                        text = "cancel",
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+            },
+            containerColor = MaterialTheme.colorScheme.surface,
+            titleContentColor = MaterialTheme.colorScheme.onSurface,
+            textContentColor = MaterialTheme.colorScheme.onSurfaceVariant
+        )
+    }
+
+    // Reset confirmation dialog
+    if (showResetDialog) {
+        AlertDialog(
+            onDismissRequest = { showResetDialog = false },
+            title = {
+                Text(
+                    text = "reset streak?",
+                    style = MaterialTheme.typography.titleLarge
+                )
+            },
+            text = {
+                Text(
+                    text = "are you sure you want to reset your $streakDays-day streak for \"$habitName\" back to 0?",
+                    style = MaterialTheme.typography.bodyMedium
+                )
+            },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        showResetDialog = false
+                        onRestartStreak()
+                    }
+                ) {
+                    Text(
+                        text = "reset",
+                        color = Color(0xFFEF4444),
+                        style = MaterialTheme.typography.labelLarge
+                    )
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showResetDialog = false }) {
                     Text(
                         text = "cancel",
                         style = MaterialTheme.typography.labelLarge
@@ -428,20 +486,16 @@ private fun StreakBrokenContent(
         Spacer(modifier = Modifier.height(48.dp))
 
         // Try again button — restart same habit
-        Button(
+        TextButton(
             onClick = onRestartStreak,
-            colors = ButtonDefaults.buttonColors(
-                containerColor = MaterialTheme.colorScheme.primary,
-                contentColor = MaterialTheme.colorScheme.onPrimary
-            ),
-            shape = RoundedCornerShape(16.dp),
             modifier = Modifier
                 .fillMaxWidth()
                 .height(56.dp)
         ) {
             Text(
                 text = "try again",
-                style = MaterialTheme.typography.titleMedium
+                style = MaterialTheme.typography.titleMedium,
+                color = MaterialTheme.colorScheme.primary
             )
         }
 
@@ -449,38 +503,21 @@ private fun StreakBrokenContent(
 
         Row(
             modifier = Modifier.fillMaxWidth(),
-            horizontalArrangement = Arrangement.spacedBy(16.dp)
+            horizontalArrangement = Arrangement.SpaceEvenly
         ) {
-            OutlinedButton(
-                onClick = onDeleteHabit,
-                colors = ButtonDefaults.outlinedButtonColors(
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                ),
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(56.dp)
-            ) {
+            TextButton(onClick = onDeleteHabit) {
                 Text(
                     text = "delete",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.error
                 )
             }
             
-            Button(
-                onClick = onHabitListOpen,
-                colors = ButtonDefaults.buttonColors(
-                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
-                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
-                ),
-                shape = RoundedCornerShape(16.dp),
-                modifier = Modifier
-                    .weight(1f)
-                    .height(56.dp)
-            ) {
+            TextButton(onClick = onHabitListOpen) {
                 Text(
                     text = "all habits",
-                    style = MaterialTheme.typography.titleMedium
+                    style = MaterialTheme.typography.labelLarge,
+                    color = MaterialTheme.colorScheme.onSurfaceVariant
                 )
             }
         }
