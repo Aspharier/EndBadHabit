@@ -26,6 +26,15 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:name=".widget.HabitWidgetConfigActivity"
+            android:exported="true"
+            android:theme="@style/Theme.EndBadHabit">
+            <intent-filter>
+                <action android:name="android.appwidget.action.APPWIDGET_CONFIGURE" />
+            </intent-filter>
+        </activity>
+
         <receiver
             android:name=".widget.HabitWidgetReceiver"
             android:exported="true">

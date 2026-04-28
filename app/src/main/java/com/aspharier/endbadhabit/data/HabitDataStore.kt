@@ -9,6 +9,7 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.firstOrNull
 import org.json.JSONArray
 import org.json.JSONObject
 import java.time.LocalDate
@@ -29,6 +30,7 @@ class HabitDataStore(private val context: Context) {
         private val HABITS_JSON = stringPreferencesKey("habits_json")
         private val SELECTED_HABIT_ID = stringPreferencesKey("selected_habit_id")
         private val SELECTED_THEME = stringPreferencesKey("selected_theme")
+        private val WIDGET_HABIT_MAPPING = stringPreferencesKey("widget_habit_mapping")
     }
 
     /**
@@ -172,6 +174,28 @@ class HabitDataStore(private val context: Context) {
         context.dataStore.edit { prefs ->
             prefs[SELECTED_THEME] = themeKey
         }
+    }
+    
+    /**
+     * Save mapping between widget ID and habit ID.
+     */
+    suspend fun saveWidgetHabitMapping(appWidgetId: Int, habitId: String) {
+        context.dataStore.edit { prefs ->
+            val currentMapping = prefs[WIDGET_HABIT_MAPPING] ?: "{}"
+            val json = JSONObject(currentMapping)
+            json.put(appWidgetId.toString(), habitId)
+            prefs[WIDGET_HABIT_MAPPING] = json.toString()
+        }
+    }
+
+    /**
+     * Get habit ID for a specific widget ID.
+     */
+    suspend fun getHabitIdForWidget(appWidgetId: Int): String? {
+        val prefs = context.dataStore.data.firstOrNull() ?: return null
+        val currentMapping = prefs[WIDGET_HABIT_MAPPING] ?: "{}"
+        val json = JSONObject(currentMapping)
+        return if (json.has(appWidgetId.toString())) json.getString(appWidgetId.toString()) else null
     }
     
     private suspend fun updateWidget() {
