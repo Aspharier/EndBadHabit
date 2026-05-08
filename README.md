@@ -65,4 +65,4 @@ Think of it as your **digital companion for self-discipline and personal growth*
 ### Clone the Repository
 
 ```bash
-git clone https://github.com/Aspharier/EndBadHabit.git<img width="450" height="450" alt="Drunk_emoticon_holding_an_alcoholic_drink_bottle-removebg-preview" src="https://github.com/user-attachments/assets/258bafdb-b18f-4dbe-a74c-1ebb02386264" />
+git clone https://github.com/Aspharier/EndBadHabit.git
