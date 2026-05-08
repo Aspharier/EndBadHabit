@@ -20,9 +20,8 @@ Think of it as your **digital companion for self-discipline and personal growth*
 
 ## App Screenshots
 
-|-------------|------------------|-------------------|
 | <img width="250" alt="Screenshot_20260508_124755" src="https://github.com/user-attachments/assets/91934225-df2e-46f9-95a8-87369628eb52" /> | <img width="250" alt="Screenshot_20260508_124652" src="https://github.com/user-attachments/assets/e8531ff2-e787-496c-87c8-34019c1b4c73" /> | <img width="250" alt="Screenshot_20260508_124813" src="https://github.com/user-attachments/assets/1f6e1e00-ce96-4c9d-a1c6-043ff0086e3f" /> |
-| <img width="250" alt="Screenshot_20260508_124652" src="https://github.com/user-attachments/assets/971b7145-9eb1-4f13-bea3-997760391e90" /> | <img width="250" alt="Screenshot_20260508_124840" src="https://github.com/user-attachments/assets/d7753678-2188-4d1c-8191-3b0279fa5465" /> | <img width="250" alt="Screenshot_20260508_124922" src="https://github.com/user-attachments/assets/e1ee551f-c7d6-4e8c-81cd-1c213b0090e2" /> |
+| <img width="250" alt="Screenshot_20260508_125441" src="https://github.com/user-attachments/assets/01580a9f-e8f2-4fa6-9a2c-d3564a633252" /> | <img width="250" alt="Screenshot_20260508_124840" src="https://github.com/user-attachments/assets/d7753678-2188-4d1c-8191-3b0279fa5465" /> | <img width="250" alt="Screenshot_20260508_124922" src="https://github.com/user-attachments/assets/e1ee551f-c7d6-4e8c-81cd-1c213b0090e2" /> |
 
 ---
 
